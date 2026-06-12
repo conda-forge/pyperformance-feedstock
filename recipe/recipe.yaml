@@ -1,0 +1,55 @@
+schema_version: 1
+
+context:
+  version: "1.14.0"
+
+package:
+  name: pyperformance
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/p/pyperformance/pyperformance-${{ version }}.tar.gz
+  sha256: 91f74393997b604375ad5b79bf569a24076d70181c076a53abad5383a238a8aa
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - pyperformance = pyperformance.cli:main
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - setuptools >=61
+    - pip
+  run:
+    - python >=3.10
+    - packaging
+    - pyperf
+
+tests:
+  - python:
+      imports:
+        - pyperformance
+      pip_check: true
+      python_version:
+        - '*'
+        - ${{ python_min }}.*
+  - requirements:
+      run:
+        - python
+    script:
+      - pyperformance --help
+
+about:
+  summary: Python benchmark suite
+  license: MIT
+  license_file: COPYING
+  homepage: https://github.com/python/pyperformance
+
+extra:
+  recipe-maintainers:
+    - mrakitin
+    - xhochy
